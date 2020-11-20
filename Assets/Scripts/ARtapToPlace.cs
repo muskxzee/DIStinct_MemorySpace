@@ -8,12 +8,18 @@ using UnityEngine.XR.ARSubsystems;
 
 public class ARtapToPlace : MonoBehaviour
 {
-    public GameObject gameObjectToInstantiate;
 
     private GameObject spawnedObject;
     private ARRaycastManager _arRaycastManager;
     private Vector2 touchPosition;
+    private List<GameObject> placedPrefabList = new List<GameObject>();
 
+    [SerializeField]
+    private int maxPrefabSpawnCount = 0;
+    private int placedPrefabCount;
+
+    [SerializeField]
+    private GameObject gameObjectToInstantiate;
     static List<ARRaycastHit> hits = new List<ARRaycastHit>();
 
     private void Awake()
@@ -23,7 +29,7 @@ public class ARtapToPlace : MonoBehaviour
 
     bool TryGetTouchPosition(out Vector2 touchPosition)
     {
-        if (Input.touchCount > 0){
+        if (Input.GetTouch(0).phase == TouchPhase.Began){
             touchPosition = Input.GetTouch(0).position;
             return true;
         }
@@ -32,7 +38,7 @@ public class ARtapToPlace : MonoBehaviour
         return false;
     }
 
-    void Update()
+    private void Update()
     {
         if (!TryGetTouchPosition(out Vector2 touchPosition))
             return;
@@ -40,16 +46,18 @@ public class ARtapToPlace : MonoBehaviour
         if(_arRaycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
         {
             var hitPose = hits[0].pose;
-
-            if (spawnedObject == null)
+            if (placedPrefabCount < maxPrefabSpawnCount)
             {
                 spawnedObject = Instantiate(gameObjectToInstantiate, hitPose.position, hitPose.rotation);
-            }
-            else
-            {
-                spawnedObject.transform.position = hitPose.position;
+                placedPrefabList.Add(spawnedObject);
+                placedPrefabCount++;
             }
 
         }
+    }
+
+    public void SetPrefabType(GameObject prefabType)
+    {
+        gameObjectToInstantiate = prefabType;
     }
 }
