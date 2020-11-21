@@ -783,4 +783,4 @@ ScriptsOnlyBuild:
   platform: 13
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: D:/DIS/DIS/Build/MultiNow.apk
+  playerPath: D:/DIS/DIS/Build/MenuIncorporated.apk
