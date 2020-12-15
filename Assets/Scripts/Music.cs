@@ -8,6 +8,7 @@ public class Music : MonoBehaviour
     public AudioSource musicSource;
     void Start()
     {
+        stopMusic();
 
     }
 
